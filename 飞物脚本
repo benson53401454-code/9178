@@ -56,7 +56,7 @@ local Tab4 = Tab("死铁轨")
 local Tab5 = Tab("99夜")
 local Tab6 = Tab("最強战场")
 local Tab7 = Tab("锻造")
-local Tab8 = Tab("其他名大脚本")
+local Tab8 = Tab("其他各大脚本")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
