@@ -54,6 +54,7 @@ local Tab2 = Tab("被遗弃")
 local Tab3 = Tab("死亡之死")
 local Tab4 = Tab("死铁轨")
 local Tab5 = Tab("99夜")
+local Tab6 = Tab("最強战场")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -77,4 +78,12 @@ end)
 
 Button(Tab5, "虚空99天汉化", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ke9460394-dot/ugik/refs/heads/main/99%E5%A4%9C%E8%99%9A%E7%A9%BA.txt"))()
+end)
+
+Button(Tab6, "垃圾桶战神", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))()
+end)
+
+Button(Tab1, "色色?", function() 
+        loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
 end)
