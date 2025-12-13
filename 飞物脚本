@@ -1,7 +1,7 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local Window = WindUI:CreateWindow({
-    Title = "飞物脚本",
+    Title = "飞物小孩🤔脚本",
     Icon = "door-open",
     Author = "",
     Folder = "CloudHub",
@@ -18,7 +18,7 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:EditOpenButton({
-    Title = "打开脚本",
+    Title = "飞物小孩🤔脚本🤯",
     Icon = "monitor",
     CornerRadius = UDim.new(0,16),
     StrokeThickness = 2,
@@ -55,6 +55,8 @@ local Tab3 = Tab("死亡之死")
 local Tab4 = Tab("死铁轨")
 local Tab5 = Tab("99夜")
 local Tab6 = Tab("最強战场")
+local Tab7 = Tab("锻造")
+local Tab8 = Tab("其他名大脚本")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -86,4 +88,36 @@ end)
 
 Button(Tab1, "色色?", function() 
         loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
+end)
+
+Button(Tab7, "锻造脚本 英文 ", function() 
+        loadstring(game:HttpGet("https://haze.wtf/api/script"))()
+end)
+
+Button(Tab1, "无敌少侠飞行脚本", function() 
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
+end)
+
+Button(Tab1, "西班牙无敌脚本", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/5twh2hsf9j-byte/BowenPrime67/refs/heads/main/Python"))()
+end)
+
+Button(Tab8, "沙脚本", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/ShaHUB/refs/heads/main/ShaHUB"))()
+end)
+
+Button(Tab8, "皮脚本", function() 
+        getgenv().XiaoPi="皮脚本QQ群1002100032" loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
+end)
+
+Button(Tab8, "HK Hub", function() 
+        loadstring(game:HttpGet(('https://github.com/devslopo/DVES/raw/main/XK%20Hub')))()
+end)
+
+Button(Tab8, "雪花脚本", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XH.HOW/refs/heads/main/XH.hox"))()
+end)
+
+Button(Tab4, "红叶子 要卡密", function() 
+        loadstring(game:HttpGet("https://getnative.cc/script/loader"))()
 end)
