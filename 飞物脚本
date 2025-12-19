@@ -125,3 +125,7 @@ end)
 Button(Tab4, "红叶子 要卡密", function() 
         loadstring(game:HttpGet("https://getnative.cc/script/loader"))()
 end)
+
+Button(Tab7, "锻造脚本", function() 
+        loadstring(game:HttpGet("https://pastefy.app/hpo8mrBS/raw"))()
+end)
