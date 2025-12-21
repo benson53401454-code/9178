@@ -129,3 +129,7 @@ end)
 Button(Tab7, "锻造脚本", function() 
         loadstring(game:HttpGet("https://pastefy.app/hpo8mrBS/raw"))()
 end)
+
+Button(Tab6, "最强战场自动格挡和自瞄", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Tsb"))()
+end)
