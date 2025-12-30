@@ -57,6 +57,7 @@ local Tab5 = Tab("99夜")
 local Tab6 = Tab("最強战场")
 local Tab7 = Tab("锻造")
 local Tab8 = Tab("其他各大脚本")
+local Tab9 = Tab("盲射🥵")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -80,6 +81,10 @@ end)
 
 Button(Tab8, "黄某脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
+end)
+
+Button(Tab9, "狂射🥵盲射🥵乱射😍", function() 
+        loadstring(game:HttpGet("https://pastebin.com/raw/vjB2N8PE"))()
 end)
 
 Button(Tab5, "虚空99天汉化", function() 
