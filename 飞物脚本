@@ -57,7 +57,7 @@ local Tab5 = Tab("99夜")
 local Tab6 = Tab("最強战场")
 local Tab7 = Tab("锻造")
 local Tab8 = Tab("其他各大脚本")
-local Tab9 = Tab("盲射🥵")
+local Tab9 = Tab("盲射")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -83,7 +83,7 @@ Button(Tab8, "黄某脚本", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
 end)
 
-Button(Tab9, "狂射🥵盲射🥵乱射😍", function() 
+Button(Tab9, "盲射脚本", function() 
         loadstring(game:HttpGet("https://pastebin.com/raw/vjB2N8PE"))()
 end)
 
@@ -137,4 +137,8 @@ end)
 
 Button(Tab6, "最强战场自动格挡和自瞄", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Tsb"))()
+end)
+
+Button(Tab8, "黑洞中心", function() 
+        BS="\104\116\116\112\115\58\47\47\103\105\116\101\101\46\99\111\109\47\66\83\95\115\99\114\105\112\116\47\115\99\114\105\112\116\47\114\97\119\47\109\97\115\116\101\114\47\66\83\95\83\99\114\105\112\116\46\76\117\97\117"loadstring(game:HttpGet(BS))()
 end)
