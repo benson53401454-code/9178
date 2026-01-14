@@ -59,6 +59,79 @@ local Tab7 = Tab("锻造")
 local Tab8 = Tab("其他各大脚本")
 local Tab9 = Tab("盲射")
 
+local Tab_General = Window:Tab({
+    ["Locked"] = false,
+    ["Title"] = "通用",
+    ["Icon"] = "rbxassetid://18520370419",
+})
+
+Tab_General:Button({
+    ["Title"] = "反挂机",
+    ["Desc"] = "反挂机踢出",
+    ["Callback"] = function()
+        print("Anti Afk On")
+        LocalPlayer.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0, 0), CurrentCamera.CFrame)
+            wait(1)
+            VirtualUser:Button2Up(Vector2.new(0, 0), CurrentCamera.CFrame)
+        end)
+        StarterGui:SetCore("SendNotification", {
+            ["Title"] = "反挂机2已开启",
+            ["Text"] = "虽然不知道有没有增强",
+            ["Duration"] = 5,
+        })
+    end
+})
+
+Tab_General:Button({
+    ["Title"] = "无敌少侠飞行脚本",
+    ["Desc"] = "只支持R15",
+    ["Callback"] = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
+    end
+})
+
+Tab_General:Button({
+    ["Title"] = "飞行",
+    ["Desc"] = "普通飞行",
+    ["Callback"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/-/refs/heads/main/%E9%A3%9E%E8%A1%8C%E8%84%9A%E6%9C%AC.lua"))()
+    end
+})
+
+Tab_General:Button({
+    ["Title"] = "开启玩家进出服务器提示",
+    ["Desc"] = "......",
+    ["Callback"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/boyscp/scriscriptsc/main/bbn.lua"))()
+    end
+})
+
+Tab_General:Slider({
+    ["Title"] = "速度设置",
+    ["Step"] = 1,
+    ["Value"] = { Min = 16, Default = 16, Max = 1000 },
+    ["Callback"] = function(Value)
+        -- 注意：部分UI库传入的是table，如果是table取第一个值
+        local speed = type(Value) == "table" and Value[1] or Value
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.WalkSpeed = speed
+        end
+    end
+})
+
+Tab_General:Slider({
+    ["Title"] = "跳跃设置",
+    ["Step"] = 1,
+    ["Value"] = { Min = 50, Default = 50, Max = 200 },
+    ["Callback"] = function(Value)
+        local jump = type(Value) == "table" and Value[1] or Value
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.JumpPower = jump
+        end
+    end
+})
+
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
 end)
