@@ -146,8 +146,3 @@ end)
 
 Button(Tab10, "泰坦钓鱼1 英文", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/x2zu/loader/main/freeloader.lua", true))()
-
-Button(Tab10, "泰坦钓鱼2 英文", function() 
-        -- Script taken from https://xenoscripts.com website --
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/LuvHub-Script/LuvHub/main/main/TitanFishing"))()
