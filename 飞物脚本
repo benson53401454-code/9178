@@ -262,8 +262,8 @@ SettingsTab:Slider({
 
 SettingsTab:Slider({
     Title = "技能释放间隔（秒）",
-    Step = 1,
-    Value = {Min = 1, Max = 30, Default = 1},
+    Step = 0,
+    Value = {Min = 0, Max = 30, Default = 0},
     Callback = function(value)
         getgenv().SkillInterval = value
     end
