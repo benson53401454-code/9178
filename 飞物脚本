@@ -143,7 +143,8 @@ Button(Tab9, "暴力区超强脚本", function()
 end)
 
 Button(Tab8, "LOL 重型钓鱼", function() 
-        local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+        -- WindUI 整合版自动钓鱼脚本（含技能释放）
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local lp = game:GetService("Players").LocalPlayer
 local RS = game:GetService("ReplicatedStorage")
@@ -152,13 +153,17 @@ local MainGui = lp.PlayerGui:WaitForChild("MainGui")
 
 getgenv().NWKZ_Anchor = false
 getgenv().NWKZ_AutoCast = false
+getgenv().AutoSkillZ = false
+getgenv().AutoSkillX = false
+getgenv().AutoSkillC = false
+getgenv().AutoSkillV = false
 
 local Window = WindUI:CreateWindow({
     Title = "LOL 重型钓鱼",
     Icon = "fish",
     Author = "",
     Folder = "AutoFisher",
-    Size = UDim2.fromOffset(560, 400),
+    Size = UDim2.fromOffset(560, 500),
     Transparent = true,
     Theme = "Dark",
     User = {
@@ -178,10 +183,9 @@ Window:EditOpenButton({
     Draggable = true,
 })
 
--- 主标签页
+-- 钓鱼功能标签页
 local MainTab = Window:Tab({Title = "钓鱼功能", Icon = "fish"})
 
--- 锚定开关
 MainTab:Toggle({
     Title = "锚定滑块",
     Value = false,
@@ -190,7 +194,6 @@ MainTab:Toggle({
     end
 })
 
--- 自动抛竿开关
 MainTab:Toggle({
     Title = "自动抛竿",
     Value = false,
@@ -199,7 +202,6 @@ MainTab:Toggle({
     end
 })
 
--- 卖鱼按钮
 MainTab:Button({
     Title = "一键卖鱼",
     Callback = function()
@@ -207,16 +209,63 @@ MainTab:Button({
     end
 })
 
+-- 技能标签页
+local SkillTab = Window:Tab({Title = "自动技能", Icon = "zap"})
+
+-- Z技能
+SkillTab:Toggle({
+    Title = "自动释放 Z 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillZ = value
+    end
+})
+
+-- X技能
+SkillTab:Toggle({
+    Title = "自动释放 X 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillX = value
+    end
+})
+
+-- C技能
+SkillTab:Toggle({
+    Title = "自动释放 C 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillC = value
+    end
+})
+
+-- V技能
+SkillTab:Toggle({
+    Title = "自动释放 V 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillV = value
+    end
+})
+
 -- 设置标签页
 local SettingsTab = Window:Tab({Title = "设置", Icon = "settings"})
 
--- 自动抛竿间隔
 SettingsTab:Slider({
     Title = "自动抛竿间隔（秒）",
     Step = 1,
     Value = {Min = 1, Max = 10, Default = 10},
     Callback = function(value)
         getgenv().CastInterval = value
+    end
+})
+
+SettingsTab:Slider({
+    Title = "技能释放间隔（秒）",
+    Step = 1,
+    Value = {Min = 1, Max = 30, Default = 1},
+    Callback = function(value)
+        getgenv().SkillInterval = value
     end
 })
 
@@ -247,4 +296,32 @@ RunService.RenderStepped:Connect(function()
         end)
     end
 end)
+
+-- 自动技能释放循环
+task.spawn(function()
+    while task.wait(getgenv().SkillInterval or 5) do
+        if getgenv().AutoSkillZ then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("Z")
+            end)
+        end
+        if getgenv().AutoSkillX then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("X")
+            end)
+        end
+        if getgenv().AutoSkillC then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("C")
+            end)
+        end
+        if getgenv().AutoSkillV then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("V")
+            end)
+        end
+    end
+end)
+
+print("WindUI 自动钓鱼脚本已加载！（含自动技能）")
 end)
