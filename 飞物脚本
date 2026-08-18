@@ -254,7 +254,7 @@ local SettingsTab = Window:Tab({Title = "设置", Icon = "settings"})
 SettingsTab:Slider({
     Title = "自动抛竿间隔（秒）",
     Step = 1,
-    Value = {Min = 1, Max = 10, Default = 10},
+    Value = {Min = 10, Max = 10, Default = 10},
     Callback = function(value)
         getgenv().CastInterval = value
     end
@@ -262,7 +262,7 @@ SettingsTab:Slider({
 
 SettingsTab:Slider({
     Title = "技能释放间隔（秒）",
-    Step = 0,
+    Step = 1,
     Value = {Min = 0, Max = 30, Default = 0},
     Callback = function(value)
         getgenv().SkillInterval = value
