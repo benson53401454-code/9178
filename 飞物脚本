@@ -214,7 +214,7 @@ local SettingsTab = Window:Tab({Title = "设置", Icon = "settings"})
 SettingsTab:Slider({
     Title = "自动抛竿间隔（秒）",
     Step = 1,
-    Value = {Min = 1, Max = 10, Default = 2},
+    Value = {Min = 1, Max = 10, Default = 10},
     Callback = function(value)
         getgenv().CastInterval = value
     end
