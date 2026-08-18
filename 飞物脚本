@@ -141,3 +141,110 @@ end)
 Button(Tab9, "暴力区超强脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
 end)
+
+Button(Tab8, "LOL 重型钓鱼", function() 
+        local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local lp = game:GetService("Players").LocalPlayer
+local RS = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local MainGui = lp.PlayerGui:WaitForChild("MainGui")
+
+getgenv().NWKZ_Anchor = false
+getgenv().NWKZ_AutoCast = false
+
+local Window = WindUI:CreateWindow({
+    Title = "LOL 重型钓鱼",
+    Icon = "fish",
+    Author = "",
+    Folder = "AutoFisher",
+    Size = UDim2.fromOffset(560, 400),
+    Transparent = true,
+    Theme = "Dark",
+    User = {
+        Enabled = false,
+    },
+})
+
+Window:EditOpenButton({
+    Title = "LOL 重型钓鱼",
+    Icon = "fish",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(
+        Color3.fromHex("00FF96"),
+        Color3.fromHex("00B4D8")
+    ),
+    Draggable = true,
+})
+
+-- 主标签页
+local MainTab = Window:Tab({Title = "钓鱼功能", Icon = "fish"})
+
+-- 锚定开关
+MainTab:Toggle({
+    Title = "锚定滑块",
+    Value = false,
+    Callback = function(value)
+        getgenv().NWKZ_Anchor = value
+    end
+})
+
+-- 自动抛竿开关
+MainTab:Toggle({
+    Title = "自动抛竿",
+    Value = false,
+    Callback = function(value)
+        getgenv().NWKZ_AutoCast = value
+    end
+})
+
+-- 卖鱼按钮
+MainTab:Button({
+    Title = "一键卖鱼",
+    Callback = function()
+        RS.Events.SellFish:FireServer("All")
+    end
+})
+
+-- 设置标签页
+local SettingsTab = Window:Tab({Title = "设置", Icon = "settings"})
+
+-- 自动抛竿间隔
+SettingsTab:Slider({
+    Title = "自动抛竿间隔（秒）",
+    Step = 1,
+    Value = {Min = 1, Max = 10, Default = 2},
+    Callback = function(value)
+        getgenv().CastInterval = value
+    end
+})
+
+-- 自动抛竿循环
+task.spawn(function()
+    while task.wait(getgenv().CastInterval or 2) do
+        if getgenv().NWKZ_AutoCast then
+            pcall(function()
+                local char = lp.Character
+                if char and not char:GetAttribute("Fishing") and not MainGui.Fishing.Visible then
+                    RS.Events.Fishing:FireServer()
+                end
+            end)
+        end
+    end
+end)
+
+-- 锚定滑块循环
+RunService.RenderStepped:Connect(function()
+    if getgenv().NWKZ_Anchor then
+        pcall(function()
+            local fishingUI = MainGui.Fishing
+            if fishingUI.Visible then
+                local bar = fishingUI.BarFrame.Bar
+                bar.Position = UDim2.new(0.5, 0, bar.Position.Y.Scale, 0)
+                RS.Fishing:FireServer("1")
+            end
+        end)
+    end
+end)
+end)
