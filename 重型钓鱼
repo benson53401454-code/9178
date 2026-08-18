@@ -1,3 +1,4 @@
+-- WindUI 整合版自动钓鱼脚本（含技能释放+音乐播放器+完全无缩放拖拽）
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local lp = game:GetService("Players").LocalPlayer
@@ -7,13 +8,22 @@ local MainGui = lp.PlayerGui:WaitForChild("MainGui")
 
 getgenv().NWKZ_Anchor = false
 getgenv().NWKZ_AutoCast = false
+getgenv().AutoSkillZ = false
+getgenv().AutoSkillX = false
+getgenv().AutoSkillC = false
+getgenv().AutoSkillV = false
+getgenv().MusicEnabled = false
+getgenv().MusicVolume = 0.5
+getgenv().MusicID = ""
+
+local Sound = nil
 
 local Window = WindUI:CreateWindow({
     Title = "自动钓鱼",
     Icon = "fish",
     Author = "",
     Folder = "AutoFisher",
-    Size = UDim2.fromOffset(560, 400),
+    Size = UDim2.fromOffset(560, 550),
     Transparent = true,
     Theme = "Dark",
     User = {
@@ -33,10 +43,9 @@ Window:EditOpenButton({
     Draggable = true,
 })
 
--- 主标签页
+-- 钓鱼功能标签页
 local MainTab = Window:Tab({Title = "钓鱼功能", Icon = "fish"})
 
--- 锚定开关
 MainTab:Toggle({
     Title = "锚定滑块（保持中间）",
     Value = false,
@@ -45,7 +54,6 @@ MainTab:Toggle({
     end
 })
 
--- 自动抛竿开关
 MainTab:Toggle({
     Title = "自动抛竿",
     Value = false,
@@ -54,7 +62,6 @@ MainTab:Toggle({
     end
 })
 
--- 卖鱼按钮
 MainTab:Button({
     Title = "一键卖鱼",
     Callback = function()
@@ -62,10 +69,85 @@ MainTab:Button({
     end
 })
 
+-- 技能标签页
+local SkillTab = Window:Tab({Title = "自动技能", Icon = "zap"})
+
+SkillTab:Toggle({
+    Title = "自动释放 Z 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillZ = value
+    end
+})
+
+SkillTab:Toggle({
+    Title = "自动释放 X 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillX = value
+    end
+})
+
+SkillTab:Toggle({
+    Title = "自动释放 C 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillC = value
+    end
+})
+
+SkillTab:Toggle({
+    Title = "自动释放 V 技能",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoSkillV = value
+    end
+})
+
+-- 音乐标签页
+local MusicTab = Window:Tab({Title = "音乐播放器", Icon = "music"})
+
+MusicTab:Toggle({
+    Title = "播放/停止音乐",
+    Value = false,
+    Callback = function(value)
+        getgenv().MusicEnabled = value
+        if value then
+            if Sound then
+                Sound:Play()
+            else
+                if getgenv().MusicID ~= "" then
+                    Sound = Instance.new("Sound")
+                    Sound.SoundId = "rbxassetid://" .. getgenv().MusicID
+                    Sound.Volume = getgenv().MusicVolume or 0.5
+                    Sound.Looped = true
+                    Sound.Parent = lp.PlayerGui
+                    Sound:Play()
+                end
+            end
+        else
+            if Sound then
+                Sound:Stop()
+            end
+        end
+    end
+})
+
+MusicTab:Slider({
+    Title = "音量",
+    Step = 0.1,
+    Value = {Min = 0, Max = 1, Default = 0.5},
+    Callback = function(value)
+        getgenv().MusicVolume = value
+        if Sound then
+            Sound.Volume = value
+        end
+    end
+})
+
 -- 设置标签页
 local SettingsTab = Window:Tab({Title = "设置", Icon = "settings"})
 
--- 自动抛竿间隔
 SettingsTab:Slider({
     Title = "自动抛竿间隔（秒）",
     Step = 1,
@@ -74,6 +156,146 @@ SettingsTab:Slider({
         getgenv().CastInterval = value
     end
 })
+
+SettingsTab:Slider({
+    Title = "技能释放间隔（秒）",
+    Step = 1,
+    Value = {Min = 1, Max = 30, Default = 5},
+    Callback = function(value)
+        getgenv().SkillInterval = value
+    end
+})
+
+-- ========== 可拖拽输入框（无缩放） ==========
+local MusicInputOverlay = Instance.new("ScreenGui")
+MusicInputOverlay.Parent = lp.PlayerGui
+MusicInputOverlay.ResetOnSpawn = false
+MusicInputOverlay.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- 主框架
+local MusicInputFrame = Instance.new("Frame")
+MusicInputFrame.Size = UDim2.new(0, 110, 0, 30)
+MusicInputFrame.Position = UDim2.new(0.5, -55, 0.02, 0)
+MusicInputFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+MusicInputFrame.BackgroundTransparency = 0.2
+MusicInputFrame.Parent = MusicInputOverlay
+MusicInputFrame.Active = true
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 8)
+frameCorner.Parent = MusicInputFrame
+
+-- 拖拽手柄（用Frame代替TextButton，完全无缩放无颜色变化）
+local DragHandle = Instance.new("Frame")
+DragHandle.Size = UDim2.new(0, 110, 0, 15)
+DragHandle.Position = UDim2.new(0, 0, 0, 30)
+DragHandle.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+DragHandle.BackgroundTransparency = 0.3
+DragHandle.Parent = MusicInputFrame
+DragHandle.Active = true
+
+local dragCorner = Instance.new("UICorner")
+dragCorner.CornerRadius = UDim.new(0, 5)
+dragCorner.Parent = DragHandle
+
+-- 拖拽手柄上的图标
+local DragIcon = Instance.new("TextLabel")
+DragIcon.Size = UDim2.new(1, 0, 1, 0)
+DragIcon.Text = "≡"
+DragIcon.BackgroundTransparency = 1
+DragIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
+DragIcon.Font = Enum.Font.GothamBold
+DragIcon.TextSize = 12
+DragIcon.Parent = DragHandle
+
+-- 输入框
+local MusicIDBox = Instance.new("TextBox")
+MusicIDBox.Size = UDim2.new(0, 65, 0, 22)
+MusicIDBox.Position = UDim2.new(0, 3, 0, 4)
+MusicIDBox.PlaceholderText = "ID"
+MusicIDBox.Text = getgenv().MusicID or ""
+MusicIDBox.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+MusicIDBox.TextColor3 = Color3.new(1, 1, 1)
+MusicIDBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+MusicIDBox.Font = Enum.Font.Gotham
+MusicIDBox.TextSize = 11
+MusicIDBox.Parent = MusicInputFrame
+
+local boxCorner = Instance.new("UICorner")
+boxCorner.CornerRadius = UDim.new(0, 6)
+boxCorner.Parent = MusicIDBox
+
+-- 播放按钮
+local PlayIDBtn = Instance.new("TextButton")
+PlayIDBtn.Size = UDim2.new(0, 38, 0, 22)
+PlayIDBtn.Position = UDim2.new(0, 70, 0, 4)
+PlayIDBtn.Text = "播"
+PlayIDBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 80)
+PlayIDBtn.TextColor3 = Color3.new(1, 1, 1)
+PlayIDBtn.AutoButtonColor = false
+PlayIDBtn.Font = Enum.Font.GothamBold
+PlayIDBtn.TextSize = 10
+PlayIDBtn.Parent = MusicInputFrame
+
+local playCorner = Instance.new("UICorner")
+playCorner.CornerRadius = UDim.new(0, 6)
+playCorner.Parent = PlayIDBtn
+
+-- 拖拽功能（用Frame的InputBegan/InputEnded，无缩放）
+local dragging = false
+local dragStart = nil
+local frameStart = nil
+
+DragHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        frameStart = MusicInputFrame.Position
+    end
+end)
+
+DragHandle.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and dragStart and frameStart then
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            MusicInputFrame.Position = UDim2.new(
+                frameStart.X.Scale,
+                frameStart.X.Offset + delta.X,
+                frameStart.Y.Scale,
+                frameStart.Y.Offset + delta.Y
+            )
+        end
+    end
+end)
+
+-- 播放按钮
+PlayIDBtn.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local newID = MusicIDBox.Text
+        if newID ~= "" then
+            getgenv().MusicID = newID
+            if Sound then
+                Sound:Stop()
+                Sound:Destroy()
+            end
+            Sound = Instance.new("Sound")
+            Sound.SoundId = "rbxassetid://" .. newID
+            Sound.Volume = getgenv().MusicVolume or 0.5
+            Sound.Looped = true
+            Sound.Parent = lp.PlayerGui
+            Sound:Play()
+            getgenv().MusicEnabled = true
+            PlayIDBtn.Text = "停"
+            PlayIDBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+        end
+    end
+end)
 
 -- 自动抛竿循环
 task.spawn(function()
@@ -102,3 +324,31 @@ RunService.RenderStepped:Connect(function()
         end)
     end
 end)
+
+-- 自动技能释放循环
+task.spawn(function()
+    while task.wait(getgenv().SkillInterval or 5) do
+        if getgenv().AutoSkillZ then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("Z")
+            end)
+        end
+        if getgenv().AutoSkillX then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("X")
+            end)
+        end
+        if getgenv().AutoSkillC then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("C")
+            end)
+        end
+        if getgenv().AutoSkillV then
+            pcall(function()
+                RS.Events.UseSkill:FireServer("V")
+            end)
+        end
+    end
+end)
+
+print("WindUI 自动钓鱼脚本已加载！")
