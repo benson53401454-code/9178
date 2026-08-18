@@ -1,7 +1,7 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local Window = WindUI:CreateWindow({
-    Title = "LOL脚本",
+    Title = "LOL Hub",
     Icon = "door-open",
     Author = "",
     Folder = "CloudHub",
@@ -18,7 +18,7 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:EditOpenButton({
-    Title = "LOL脚本",
+    Title = "LOL Hub",
     Icon = "monitor",
     CornerRadius = UDim.new(0,16),
     StrokeThickness = 2,
@@ -59,6 +59,7 @@ local Tab7 = Tab("锻造")
 local Tab8 = Tab("其他各大脚本")
 local Tab9 = Tab("盲射")
 local Tab10 = Tab("重型钓鱼")
+local Tab11 = Tab("暴力区")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -149,4 +150,8 @@ Button(Tab10, "重型钓鱼", function()
 	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
 ]]
 loadstring(game:HttpGet("https://raw.githubusercontent.com/p54803322-coder/PPINGYYY-HUB-/refs/heads/main/main.lua"))()
+end)
+
+Button(Tab11, "暴力区超强脚本", function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
 end)
