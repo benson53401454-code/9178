@@ -55,11 +55,9 @@ local Tab3 = Tab("死亡之死")
 local Tab4 = Tab("死铁轨")
 local Tab5 = Tab("99夜")
 local Tab6 = Tab("最強战场")
-local Tab7 = Tab("锻造")
-local Tab8 = Tab("其他各大脚本")
-local Tab9 = Tab("盲射")
-local Tab10 = Tab("重型钓鱼")
-local Tab11 = Tab("暴力区")
+local Tab7 = Tab("其他各大脚本")
+local Tab8 = Tab("重型钓鱼")
+local Tab9 = Tab("暴力区")
 
 Button(Tab2, "Hub 被遗弃", function() 
         loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
@@ -81,12 +79,8 @@ Button(Tab1, "跑速", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/MrScripterrFr/Speed-Changer/main/Speed%20Changer"))()
 end)
 
-Button(Tab8, "黄某脚本", function() 
+Button(Tab7, "黄某脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
-end)
-
-Button(Tab9, "盲射脚本", function() 
-        loadstring(game:HttpGet("https://pastebin.com/raw/vjB2N8PE"))()
 end)
 
 Button(Tab5, "虚空99天汉化", function() 
@@ -101,10 +95,6 @@ Button(Tab1, "色色?", function()
         loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
 end)
 
-Button(Tab7, "锻造脚本 英文 ", function() 
-        loadstring(game:HttpGet("https://haze.wtf/api/script"))()
-end)
-
 Button(Tab1, "无敌少侠飞行脚本", function() 
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
 end)
@@ -113,19 +103,19 @@ Button(Tab1, "西班牙无敌脚本", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/5twh2hsf9j-byte/BowenPrime67/refs/heads/main/Python"))()
 end)
 
-Button(Tab8, "沙脚本", function() 
+Button(Tab7, "沙脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/ShaHUB/refs/heads/main/ShaHUB"))()
 end)
 
-Button(Tab8, "皮脚本", function() 
+Button(Tab7, "皮脚本", function() 
         getgenv().XiaoPi="皮脚本QQ群1002100032" loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
 end)
 
-Button(Tab8, "HK Hub", function() 
+Button(Tab7, "HK Hub", function() 
         loadstring(game:HttpGet(('https://github.com/devslopo/DVES/raw/main/XK%20Hub')))()
 end)
 
-Button(Tab8, "雪花脚本", function() 
+Button(Tab7, "雪花脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XH.HOW/refs/heads/main/XH.hox"))()
 end)
 
@@ -133,25 +123,21 @@ Button(Tab4, "红叶子 要卡密", function()
         loadstring(game:HttpGet("https://getnative.cc/script/loader"))()
 end)
 
-Button(Tab7, "锻造脚本", function() 
-        loadstring(game:HttpGet("https://pastefy.app/hpo8mrBS/raw"))()
-end)
-
 Button(Tab6, "最强战场自动格挡和自瞄", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Tsb"))()
 end)
 
-Button(Tab8, "黑洞中心", function() 
+Button(Tab7, "黑洞中心", function() 
         BS="\104\116\116\112\115\58\47\47\103\105\116\101\101\46\99\111\109\47\66\83\95\115\99\114\105\112\116\47\115\99\114\105\112\116\47\114\97\119\47\109\97\115\116\101\114\47\66\83\95\83\99\114\105\112\116\46\76\117\97\117"loadstring(game:HttpGet(BS))()
 end)
 
-Button(Tab10, "重型钓鱼", function() 
+Button(Tab8, "重型钓鱼", function() 
         --[[
 	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
 ]]
 loadstring(game:HttpGet("https://raw.githubusercontent.com/p54803322-coder/PPINGYYY-HUB-/refs/heads/main/main.lua"))()
 end)
 
-Button(Tab11, "暴力区超强脚本", function() 
+Button(Tab9, "暴力区超强脚本", function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
 end)
