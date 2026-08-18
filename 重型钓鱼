@@ -1,4 +1,3 @@
--- WindUI 整合版自动钓鱼脚本
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 local lp = game:GetService("Players").LocalPlayer
