@@ -142,7 +142,7 @@ Button(Tab9, "暴力区超强脚本", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
 end)
 
-Button(Tab1, "LOL Hub", function() 
+Button(Tab8, "LOL Hub", function() 
         -- LOL Hub - 带背景图 WindUI 版
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
