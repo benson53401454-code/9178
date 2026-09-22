@@ -1,0 +1,100 @@
+-- 自动传送脚本（WindUI版 + 防AFK）
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local lp = game:GetService("Players").LocalPlayer
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
+
+-- 传送目标坐标
+local TargetPos = Vector3.new(265.68, -1.50, 6.70)
+
+getgenv().AutoTeleport = false
+getgenv().AntiAFK = false
+
+local function TeleportToTarget()
+    local char = lp.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(TargetPos)
+    end
+end
+
+local Window = WindUI:CreateWindow({
+    Title = "自动传送",
+    Icon = "map-pin",
+    Author = "",
+    Folder = "AutoTeleport",
+    Size = UDim2.fromOffset(500, 300),
+    Transparent = true,
+    Theme = "Dark",
+    User = {
+        Enabled = false,
+    },
+})
+
+Window:EditOpenButton({
+    Title = "自动传送",
+    Icon = "map-pin",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(
+        Color3.fromHex("FFFFFF"),
+        Color3.fromHex("FF0000")
+    ),
+    Draggable = true,
+})
+
+-- 主标签页：自动传送
+local TeleportTab = Window:Tab({Title = "自动传送", Icon = "map-pin"})
+
+-- 自动传送开关（主功能）
+TeleportTab:Toggle({
+    Title = "自动传送（持续锁定位置）",
+    Value = false,
+    Callback = function(value)
+        getgenv().AutoTeleport = value
+        if value then
+            TeleportToTarget()
+        end
+    end
+})
+
+-- 立即传送按钮
+TeleportTab:Button({
+    Title = "立即传送一次",
+    Callback = function()
+        TeleportToTarget()
+    end
+})
+
+-- 辅助功能标签页
+local ExtraTab = Window:Tab({Title = "辅助功能", Icon = "settings"})
+
+ExtraTab:Toggle({
+    Title = "防AFK",
+    Value = false,
+    Callback = function(value)
+        getgenv().AntiAFK = value
+    end
+})
+
+-- 自动传送循环
+RunService.RenderStepped:Connect(function()
+    if getgenv().AutoTeleport then
+        pcall(function()
+            TeleportToTarget()
+        end)
+    end
+end)
+
+-- 防AFK
+lp.Idled:Connect(function()
+    if getgenv().AntiAFK then
+        pcall(function()
+            VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        end)
+    end
+end)
+
+print("自动传送脚本已加载！目标坐标: " .. tostring(TargetPos))
