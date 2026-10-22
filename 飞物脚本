@@ -2,33 +2,15 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImInsane-1337/neverlose-ui/refs/heads/main/source/library.lua"))()
 
 -- ================= 修改主题颜色 (蓝色改红色) =================
-if Library and Library.Theme then
-    -- 修改主色调为纯红色
-    Library.Theme.Accent = Color3.fromRGB(255, 0, 0) 
-    Library.Theme.AccentGradient = Color3.fromRGB(255, 0, 0)
-    
-    -- 修改相关元素的颜色（如果要让背景也偏红一点，可以取消下面两行的注释）
-    -- Library.Theme["Background"] = Color3.fromRGB(15, 5, 5)
-    -- Library.Theme["Background 2"] = Color3.fromRGB(20, 8, 8)
-    
-    -- 应用主题更新
-    for _, Item in pairs(Library.ThemeItems) do
-        for Property, Value in pairs(Item.Properties) do
-            if type(Value) == "string" and Value == "Accent" then
-                Item.Item[Property] = Library.Theme.Accent
-            elseif type(Value) == "string" and Value == "AccentGradient" then
-                Item.Item[Property] = Library.Theme.AccentGradient
-            end
-        end
-    end
-end
+Library:ChangeTheme("Accent", Color3.fromRGB(255, 0, 0))
+Library:ChangeTheme("AccentGradient", Color3.fromRGB(255, 0, 0))
 
--- 创建主窗口
+-- 创建主窗口 (自带悬浮球，图标已替换)
 local Window = Library:Window({
     Name = "LOL Hub",
     SubName = "by You",
-    Logo = "132607724189951", -- 可以换成你自己的 Roblox 素材 ID
-    MenuKeybind = Enum.KeyCode.End -- 按 End 键打开/关闭菜单
+    Logo = "132607724189951", -- 悬浮球图标
+    MenuKeybind = Enum.KeyCode.End -- 快捷键
 })
 
 -- ================= 通用 Page =================
