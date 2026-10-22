@@ -1,54 +1,135 @@
 -- 加载 Neverlose UI 库
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImInsane-1337/neverlose-ui/refs/heads/main/source/library.lua"))()
 
--- ================= 修改主题颜色 (蓝色改红色) =================
+-- 修改主题为红色
 Library:ChangeTheme("Accent", Color3.fromRGB(255, 0, 0))
 Library:ChangeTheme("AccentGradient", Color3.fromRGB(255, 0, 0))
 
--- 创建主窗口 (自带悬浮球，图标已替换)
+-- 创建主窗口 (按 End 键开启)
 local Window = Library:Window({
     Name = "LOL Hub",
     SubName = "by You",
-    Logo = "132607724189951", -- 悬浮球图标
-    MenuKeybind = Enum.KeyCode.End -- 快捷键
+    Logo = "", 
+    MenuKeybind = Enum.KeyCode.End
 })
+
+-- ================= 主要 Page =================
+local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://4483362458"})
+local MainSection = MainPage:Section({Name = "主要功能", Side = 1})
+
+-- 速度修改
+getgenv().PlayerSpeed = 16
+getgenv().KeepSpeed = false
+
+MainSection:Slider({
+    Name = "移动速度",
+    Min = 16,
+    Max = 500,
+    Default = 16,
+    Callback = function(value)
+        getgenv().PlayerSpeed = value
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = value
+        end
+    end
+})
+
+MainSection:Toggle({
+    Name = "锁定速度（防重置）",
+    Default = false,
+    Callback = function(state)
+        getgenv().KeepSpeed = state
+    end
+})
+
+-- 跳跃高度修改
+getgenv().PlayerJump = 50
+getgenv().KeepJump = false
+
+MainSection:Slider({
+    Name = "跳跃高度",
+    Min = 50,
+    Max = 500,
+    Default = 50,
+    Callback = function(value)
+        getgenv().PlayerJump = value
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.JumpPower = value
+            char.Humanoid.JumpHeight = value / 2 
+        end
+    end
+})
+
+MainSection:Toggle({
+    Name = "锁定跳跃高度（防重置）",
+    Default = false,
+    Callback = function(state)
+        getgenv().KeepJump = state
+    end
+})
+
+-- ================= 穿墙功能 (Noclip) =================
+getgenv().NoclipEnabled = false
+
+MainSection:Toggle({
+    Name = "穿墙 (Noclip)",
+    Default = false,
+    Callback = function(state)
+        getgenv().NoclipEnabled = state
+        if not state then
+            -- 关闭时恢复碰撞
+            local char = game.Players.LocalPlayer.Character
+            if char then
+                for _, v in pairs(char:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = true
+                    end
+                end
+            end
+        end
+    end
+})
+
+-- 穿墙循环
+game:GetService("RunService").Stepped:Connect(function()
+    if getgenv().NoclipEnabled then
+        local char = game.Players.LocalPlayer.Character
+        if char then
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = false
+                end
+            end
+        end
+    end
+end)
+-- =========================================================
+
+-- 锁定循环
+game:GetService("RunService").Heartbeat:Connect(function()
+    local char = game.Players.LocalPlayer.Character
+    if char and char:FindFirstChild("Humanoid") then
+        local hum = char.Humanoid
+        if getgenv().KeepSpeed and hum.WalkSpeed ~= getgenv().PlayerSpeed then
+            hum.WalkSpeed = getgenv().PlayerSpeed
+        end
+        if getgenv().KeepJump then
+            if hum.JumpPower ~= getgenv().PlayerJump then hum.JumpPower = getgenv().PlayerJump end
+            if hum.JumpHeight ~= getgenv().PlayerJump / 2 then hum.JumpHeight = getgenv().PlayerJump / 2 end
+        end
+    end
+end)
 
 -- ================= 通用 Page =================
 local Page1 = Window:Page({Name = "通用", Icon = "rbxassetid://4483362458"})
 local Section1 = Page1:Section({Name = "通用功能", Side = 1})
 
 Section1:Button({
-    Name = "飞行",
-    Callback = function()
-        loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()
-    end
-})
-
-Section1:Button({
     Name = "跑速",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/MrScripterrFr/Speed-Changer/main/Speed%20Changer"))()
-    end
-})
-
-Section1:Button({
-    Name = "色色?",
-    Callback = function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
-    end
-})
-
-Section1:Button({
-    Name = "无敌少侠飞行脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
-    end
-})
-
-Section1:Button({
-    Name = "西班牙无敌脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/5twh2hsf9j-byte/BowenPrime67/refs/heads/main/Python"))()
     end
 })
 
