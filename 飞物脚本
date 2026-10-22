@@ -1,23 +1,302 @@
 -- 加载 Neverlose UI 库
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImInsane-1337/neverlose-ui/refs/heads/main/source/library.lua"))()
 
--- 创建主窗口 (Size 缩小)
+-- 创建主窗口
 local Window = Library:Window({
     Name = "LOL Hub",
     SubName = "by You",
-    Size = UDim2.new(0, 350, 0, 230), -- 缩小了窗口尺寸
     Logo = "132607724189951", 
     MenuKeybind = Enum.KeyCode.End
 })
 
--- ================= 汉化设置面板 =================
--- 通过遍历 CoreGui，找到 Neverlose UI 的界面元素，替换文字
+-- ================= 修改背景图 =================
+-- 你的图片 ID 填在这里 (确保图片已上传到 Roblox)
+local BackgroundImageID = "rbxassetid://132607724189951-- [[ ★ PPINGYYY HUB - PREMIUM LOADING SCREEN v6 ★ ]] --
+local lp = game:GetService("Players").LocalPlayer
+local RS = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Camera = workspace.CurrentCamera
+
+-- ⚙️ CONFIG
+local LOADING_TIME = 3.5
+local PRIMARY_COLOR = Color3.fromRGB(0, 255, 130)
+local PRIMARY_COLOR_LIGHT = Color3.fromRGB(120, 255, 190)
+local SECONDARY_COLOR = Color3.fromRGB(100, 200, 255)
+local ACCENT_COLOR = Color3.fromRGB(255, 100, 200)
+local BG_COLOR = Color3.fromRGB(12, 12, 22)
+local STAR_COUNT = 60
+local OVERSCAN = 0.08
+
+-- ★ ระยะตก: ใช้ pixel จริงจากความสูงจอ (viewport) คูณ 1.5 เท่า รับประกันหลุดจอทุกอุปกรณ์แน่นอน
+-- (ของเดิมคำนวณจาก Scale ของกรอบเล็กๆ อย่าง TitleGroup/ProgressGroup ที่สูงแค่ 100-200px เลยตกไม่พ้นจอ)
+local function GetDropDistance()
+    local h = Camera and Camera.ViewportSize.Y or 1000
+    return h * 1.6
+end
+
+-- ✨ ล้างของเก่า
+for _, v in ipairs(game:GetService("CoreGui"):GetChildren()) do 
+    if v.Name == "PPINGYYY_Hub_Ultimate" then v:Destroy() end 
+end
+
+local sg = Instance.new("ScreenGui", game:GetService("CoreGui"))
+sg.Name = "PPINGYYY_Hub_Ultimate"
+sg.ResetOnSpawn = false
+sg.IgnoreGuiInset = true
+
+-- 📦 Main Loading Container — ขนาดเท่าจอจริงพอดี (เนื้อหา UI ทั้งหมดอิงตำแหน่งจากตรงนี้ จะได้ไม่ล้นขอบ)
+local LoadingContainer = Instance.new("Frame", sg)
+LoadingContainer.Size = UDim2.new(1, 0, 1, 0)
+LoadingContainer.Position = UDim2.new(0, 0, -1, 0) -- เริ่มเหนือจอ
+LoadingContainer.BackgroundTransparency = 1 -- พื้นหลังจริงย้ายไปอยู่ที่ BackgroundLayer แทน (จะได้ขยายเกินขอบได้อิสระ)
+LoadingContainer.BorderSizePixel = 0
+LoadingContainer.ZIndex = 999
+LoadingContainer.ClipsDescendants = false
+
+-- 🌌 BackgroundLayer: ชั้นพื้นหลัง (ขยายเกินขอบจอกันโหว่) แยกออกจากชั้นเนื้อหา UI
+local BackgroundLayer = Instance.new("Frame", LoadingContainer)
+BackgroundLayer.Size = UDim2.new(1 + OVERSCAN * 2, 0, 1 + OVERSCAN * 2, 0)
+BackgroundLayer.Position = UDim2.new(-OVERSCAN, 0, -OVERSCAN, 0)
+BackgroundLayer.BackgroundColor3 = BG_COLOR
+BackgroundLayer.BackgroundTransparency = 0.65
+BackgroundLayer.BorderSizePixel = 0
+BackgroundLayer.ZIndex = 999
+local UIGradient = Instance.new("UIGradient", BackgroundLayer)
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(12, 12, 25)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(18, 24, 45)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(12, 12, 25))
+}
+UIGradient.Rotation = 90
+
+-- ⭐ Animated Starfield (อยู่ใน BackgroundLayer ที่ขยายเกินขอบ)
+local stars = {}
+local function CreateStarfield()
+    for i = 1, STAR_COUNT do
+        local star = Instance.new("Frame", BackgroundLayer)
+        local size = math.random(1, 3)
+        star.Size = UDim2.new(0, size, 0, size)
+        star.Position = UDim2.new(math.random(0, 100)/100, 0, math.random(0, 100)/100, 0)
+        star.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        star.BorderSizePixel = 0
+        star.ZIndex = 1000
+        star.BackgroundTransparency = math.random(4, 8) / 10
+        Instance.new("UICorner", star).CornerRadius = UDim.new(1, 0)
+        table.insert(stars, star)
+        task.spawn(function()
+            while star.Parent do
+                local moveTime = math.random(40, 80) / 10
+                local newX = math.clamp(star.Position.X.Scale + (math.random(-6, 6) / 100), 0, 1)
+                local newY = math.clamp(star.Position.Y.Scale + (math.random(-6, 6) / 100), 0, 1)
+                TweenService:Create(star, TweenInfo.new(moveTime, Enum.EasingStyle.Sine), {
+                    Position = UDim2.new(newX, 0, newY, 0),
+                    BackgroundTransparency = math.random(3, 9) / 10
+                }):Play()
+                task.wait(moveTime)
+            end
+        end)
+    end
+end
+CreateStarfield()
+
+-- ✨ Corner glow ประดับมุม (อยู่ใน BackgroundLayer เช่นกัน)
+local function CreateCornerGlow(anchorX, anchorY, posX, posY)
+    local glow = Instance.new("ImageLabel", BackgroundLayer)
+    glow.Size = UDim2.new(0, 500, 0, 500)
+    glow.AnchorPoint = Vector2.new(anchorX, anchorY)
+    glow.Position = UDim2.new(posX, 0, posY, 0)
+    glow.BackgroundTransparency = 1
+    glow.Image = "rbxasset://textures/particles/sparkles_main.dds"
+    glow.ImageColor3 = PRIMARY_COLOR
+    glow.ImageTransparency = 0.85
+    glow.ZIndex = 998
+    return glow
+end
+CreateCornerGlow(0, 1, 0.05, 0.95)
+CreateCornerGlow(1, 1, 0.95, 0.95)
+CreateCornerGlow(0, 0, 0.05, 0.05)
+CreateCornerGlow(1, 0, 0.95, 0.05)
+
+-- 🎯 Main Title Group — ★ ตอนนี้อยู่ใน LoadingContainer ตรงๆ (ไม่ใช่ BackgroundLayer ที่ขยายเกิน) เพื่อให้ตำแหน่งอิงจอจริง ไม่ล้นขอบ
+local TitleGroup = Instance.new("Frame", LoadingContainer)
+TitleGroup.Size = UDim2.new(1, 0, 0, 200)
+TitleGroup.Position = UDim2.new(0, 0, 0.3, 0)
+TitleGroup.BackgroundTransparency = 1
+TitleGroup.ZIndex = 1001
+
+local TopLine = Instance.new("Frame", TitleGroup)
+TopLine.Size = UDim2.new(0, 0, 0, 3)
+TopLine.Position = UDim2.new(0.5, 0, 0, -20)
+TopLine.BackgroundColor3 = PRIMARY_COLOR
+TopLine.BorderSizePixel = 0
+TopLine.AnchorPoint = Vector2.new(0.5, 0)
+
+local MainTitle = Instance.new("TextLabel", TitleGroup)
+MainTitle.Size = UDim2.new(0.9, 0, 0, 80)
+MainTitle.Position = UDim2.new(0.05, 0, 0.15, 0)
+MainTitle.Text = "★ PPINGYYY HUB ★"
+MainTitle.TextColor3 = PRIMARY_COLOR
+MainTitle.Font = Enum.Font.GothamBold
+MainTitle.TextSize = 48
+MainTitle.BackgroundTransparency = 1
+MainTitle.ZIndex = 1001
+MainTitle.TextTransparency = 1
+local TitleAspect = Instance.new("UITextSizeConstraint", MainTitle)
+TitleAspect.MinTextSize = 22
+TitleAspect.MaxTextSize = 48
+
+local TitleGlow = Instance.new("TextLabel", TitleGroup)
+TitleGlow.Size = MainTitle.Size
+TitleGlow.Position = MainTitle.Position
+TitleGlow.Text = "★ PPINGYYY HUB ★"
+TitleGlow.TextColor3 = PRIMARY_COLOR
+TitleGlow.Font = Enum.Font.GothamBold
+TitleGlow.TextSize = 48
+TitleGlow.BackgroundTransparency = 1
+TitleGlow.ZIndex = 1000
+TitleGlow.TextTransparency = 0.6
+local GlowAspect = Instance.new("UITextSizeConstraint", TitleGlow)
+GlowAspect.MinTextSize = 22
+GlowAspect.MaxTextSize = 48
+
+local Subtitle = Instance.new("TextLabel", TitleGroup)
+Subtitle.Size = UDim2.new(0.8, 0, 0, 40)
+Subtitle.Position = UDim2.new(0.1, 0, 0.65, 0)
+Subtitle.Text = "LOADING EXPERIENCE"
+Subtitle.TextColor3 = SECONDARY_COLOR
+Subtitle.Font = Enum.Font.Gotham
+Subtitle.TextSize = 18
+Subtitle.BackgroundTransparency = 1
+Subtitle.ZIndex = 1001
+Subtitle.TextTransparency = 1
+local SubAspect = Instance.new("UITextSizeConstraint", Subtitle)
+SubAspect.MinTextSize = 12
+SubAspect.MaxTextSize = 18
+
+local BottomLine = Instance.new("Frame", TitleGroup)
+BottomLine.Size = UDim2.new(0, 0, 0, 2)
+BottomLine.Position = UDim2.new(0.5, 0, 1, 20)
+BottomLine.BackgroundColor3 = ACCENT_COLOR
+BottomLine.BorderSizePixel = 0
+BottomLine.AnchorPoint = Vector2.new(0.5, 0)
+
+-- 📊 Progress Bar Section — อยู่ใน LoadingContainer ตรงๆ เช่นกัน (แก้ปัญหาเปอร์เซ็นต์ล้นขอบจอ)
+local ProgressGroup = Instance.new("Frame", LoadingContainer)
+ProgressGroup.Size = UDim2.new(1, 0, 0, 100)
+ProgressGroup.Position = UDim2.new(0, 0, 0.65, 0)
+ProgressGroup.BackgroundTransparency = 1
+ProgressGroup.ZIndex = 1001
+
+local BarBg = Instance.new("Frame", ProgressGroup)
+BarBg.Size = UDim2.new(0.7, 0, 0, 6) -- ลดความกว้างเล็กน้อยเพื่อเผื่อที่ให้ % ด้านขวาไม่ชนขอบ
+BarBg.Position = UDim2.new(0.08, 0, 0.3, 0)
+BarBg.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+BarBg.BackgroundTransparency = 0.3
+BarBg.BorderSizePixel = 0
+Instance.new("UICorner", BarBg).CornerRadius = UDim.new(1, 0)
+
+local BarFill = Instance.new("Frame", BarBg)
+BarFill.Size = UDim2.new(0, 0, 1, 0)
+BarFill.BackgroundColor3 = PRIMARY_COLOR
+BarFill.BorderSizePixel = 0
+BarFill.ClipsDescendants = true
+Instance.new("UICorner", BarFill).CornerRadius = UDim.new(1, 0)
+
+local FillGradient = Instance.new("UIGradient", BarFill)
+FillGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, PRIMARY_COLOR),
+    ColorSequenceKeypoint.new(0.5, PRIMARY_COLOR_LIGHT),
+    ColorSequenceKeypoint.new(1, PRIMARY_COLOR)
+}
+FillGradient.Rotation = 90
+
+local BarShine = Instance.new("Frame", BarFill)
+BarShine.Size = UDim2.new(0, 30, 1, 0)
+BarShine.Position = UDim2.new(0, 0, 0, 0)
+BarShine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+BarShine.BackgroundTransparency = 0.7
+BarShine.BorderSizePixel = 0
+BarShine.ZIndex = 1002
+
+-- ★ เปอร์เซ็นต์: ใช้ AnchorPoint + ตำแหน่งแบบ Scale ล้วนๆ ชิดขวาแบบเผื่อขอบ ไม่มีทางล้นจออีกต่อไป
+local PercentText = Instance.new("TextLabel", ProgressGroup)
+PercentText.Size = UDim2.new(0, 70, 0, 30)
+PercentText.AnchorPoint = Vector2.new(1, 0) -- ยึดขอบขวาของตัวเอง
+PercentText.Position = UDim2.new(0.97, 0, 0.2, 0) -- ชิดขวาแบบเว้นขอบ 3%
+PercentText.Text = "0%"
+PercentText.TextColor3 = PRIMARY_COLOR
+PercentText.Font = Enum.Font.GothamBold
+PercentText.TextSize = 16
+PercentText.TextXAlignment = Enum.TextXAlignment.Right
+PercentText.BackgroundTransparency = 1
+PercentText.TextTransparency = 1
+PercentText.ZIndex = 1001
+
+-- Status Pill (ข้อความ "Loading resources..." ฯลฯ)
+local StatusPill = Instance.new("Frame", ProgressGroup)
+StatusPill.Size = UDim2.new(0, 220, 0, 32)
+StatusPill.AnchorPoint = Vector2.new(0.5, 0)
+StatusPill.Position = UDim2.new(0.5, 0, 0.62, 0)
+StatusPill.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+StatusPill.BackgroundTransparency = 0.35
+StatusPill.ZIndex = 1000
+StatusPill.Visible = false
+Instance.new("UICorner", StatusPill).CornerRadius = UDim.new(1, 0)
+local PillStroke = Instance.new("UIStroke", StatusPill)
+PillStroke.Color = PRIMARY_COLOR
+PillStroke.Transparency = 0.5
+PillStroke.Thickness = 1
+
+local StatusDot = Instance.new("Frame", StatusPill)
+StatusDot.Size = UDim2.new(0, 8, 0, 8)
+StatusDot.AnchorPoint = Vector2.new(0, 0.5)
+StatusDot.Position = UDim2.new(0, 14, 0.5, 0)
+StatusDot.BackgroundColor3 = PRIMARY_COLOR
+StatusDot.BorderSizePixel = 0
+Instance.new("UICorner", StatusDot).CornerRadius = UDim.new(1, 0)
+local statusDotBlinking = true
 task.spawn(function()
-    task.wait(1) -- 等待 UI 加载完成
+    while statusDotBlinking and StatusDot.Parent do
+        TweenService"
+
+task.spawn(function()
+    task.wait(1) -- 等待窗口加载
+    pcall(function()
+        -- 寻找 Neverlose 的主窗口框架
+        for _, v in pairs(game:GetService("CoreGui"):GetDescendants()) do
+            if v:IsA("Frame") and (v.Name == "Main" or v.Name == "Container" or v.Name == "Window") then
+                -- 检查是否已经加了背景，避免重复添加
+                if not v:FindFirstChild("CustomBackground") then
+                    -- 创建图片背景
+                    local bg = Instance.new("ImageLabel")
+                    bg.Name = "CustomBackground"
+                    bg.Size = UDim2.new(1, 0, 1, 0)
+                    bg.Position = UDim2.new(0, 0, 0, 0)
+                    bg.BackgroundTransparency = 1
+                    bg.Image = BackgroundImageID
+                    bg.ScaleType = Enum.ScaleType.Crop
+                    bg.ZIndex = 0 -- 放在最底层
+                    bg.ImageTransparency = 0.3 -- 透明度：0 是清晰，1 是透明。0.3 代表半透明
+                    bg.Parent = v
+                    
+                    -- 给主窗口加上圆角（如果原本没有的话）
+                    local corner = Instance.new("UICorner")
+                    corner.CornerRadius = UDim.new(0, 6)
+                    corner.Parent = v
+                end
+            end
+        end
+    end)
+end)
+
+-- ================= 强制缩小 UI + 汉化 =================
+task.spawn(function()
+    task.wait(1.5) -- 等待 UI 完全加载出来
     pcall(function()
         for _, v in pairs(game:GetService("CoreGui"):GetDescendants()) do
+            -- 1. 汉化设置面板
             if v:IsA("TextLabel") or v:IsA("TextButton") then
-                -- 设置面板翻译
                 if v.Text == "Settings" then v.Text = "设置"
                 elseif v.Text == "Configs" then v.Text = "配置"
                 elseif v.Text == "Visuals" then v.Text = "视觉"
@@ -30,8 +309,18 @@ task.spawn(function()
                 elseif v.Text == "Interface" then v.Text = "界面设置"
                 elseif v.Text == "Accent Color" then v.Text = "主题颜色"
                 elseif v.Text == "Toggle UI" then v.Text = "显示/隐藏UI"
-                elseif v.Text == "Panic" then v.Text = "紧急退出"
-                elseif v.Text == "Close" then v.Text = "关闭"
+                end
+            end
+            
+            -- 2. 强制缩小 UI
+            if v:IsA("Frame") and (v.Name == "Main" or v.Name == "Container" or v.Name == "Window") then
+                local uiScale = v:FindFirstChildOfClass("UIScale")
+                if uiScale then
+                    uiScale.Scale = 0.75 
+                else
+                    local newScale = Instance.new("UIScale")
+                    newScale.Scale = 0.75
+                    newScale.Parent = v
                 end
             end
         end
@@ -40,194 +329,4 @@ end)
 
 -- ================= 通用 Page =================
 local Page1 = Window:Page({Name = "通用", Icon = "rbxassetid://4483362458"})
-local Section1 = Page1:Section({Name = "通用功能", Side = 1})
-
-Section1:Button({
-    Name = "飞行",
-    Callback = function()
-        loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()
-    end
-})
-
-Section1:Button({
-    Name = "跑速",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/MrScripterrFr/Speed-Changer/main/Speed%20Changer"))()
-    end
-})
-
-Section1:Button({
-    Name = "色色?",
-    Callback = function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
-    end
-})
-
-Section1:Button({
-    Name = "无敌少侠飞行脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
-    end
-})
-
-Section1:Button({
-    Name = "西班牙无敌脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/5twh2hsf9j-byte/BowenPrime67/refs/heads/main/Python"))()
-    end
-})
-
-Section1:Button({
-    Name = "TX翻译脚本",
-    Callback = function()
-        TX = "TX Script"
-        Script = "全自动翻译"
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/JsYb666/Item/refs/heads/main/Auto-language"))()
-    end
-})
-
--- ================= 被遗弃 Page =================
-local Page2 = Window:Page({Name = "被遗弃", Icon = "rbxassetid://4483362458"})
-local Section2 = Page2:Section({Name = "被遗弃功能", Side = 1})
-
-Section2:Button({
-    Name = "Hub 被遗弃",
-    Callback = function()
-        loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
-    end
-})
-
--- ================= 死亡之死 Page =================
-local Page3 = Window:Page({Name = "死亡之死", Icon = "rbxassetid://4483362458"})
-local Section3 = Page3:Section({Name = "死亡之死功能", Side = 1})
-
-Section3:Button({
-    Name = "Hub 死亡之死",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Death%20of%20death"))()
-    end
-})
-
--- ================= 死铁轨 Page =================
-local Page4 = Window:Page({Name = "死铁轨", Icon = "rbxassetid://4483362458"})
-local Section4 = Page4:Section({Name = "死铁轨功能", Side = 1})
-
-Section4:Button({
-    Name = "Hub 死铁轨",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/DeadRail"))()
-    end
-})
-
-Section4:Button({
-    Name = "红叶子 要卡密",
-    Callback = function()
-        loadstring(game:HttpGet("https://getnative.cc/script/loader"))()
-    end
-})
-
--- ================= 99夜 Page =================
-local Page5 = Window:Page({Name = "99夜", Icon = "rbxassetid://4483362458"})
-local Section5 = Page5:Section({Name = "99夜功能", Side = 1})
-
-Section5:Button({
-    Name = "虚空99天汉化",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ke9460394-dot/ugik/refs/heads/main/99%E5%A4%9C%E8%99%9A%E7%A9%BA.txt"))()
-    end
-})
-
--- ================= 最強战场 Page =================
-local Page6 = Window:Page({Name = "最強战场", Icon = "rbxassetid://4483362458"})
-local Section6 = Page6:Section({Name = "最強战场功能", Side = 1})
-
-Section6:Button({
-    Name = "垃圾桶战神",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))()
-    end
-})
-
-Section6:Button({
-    Name = "最强战场自动格挡和自瞄",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Tsb"))()
-    end
-})
-
--- ================= 其他各大脚本 Page =================
-local Page7 = Window:Page({Name = "其他各大脚本", Icon = "rbxassetid://4483362458"})
-local Section7 = Page7:Section({Name = "其他脚本", Side = 1})
-
-Section7:Button({
-    Name = "黄某脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
-    end
-})
-
-Section7:Button({
-    Name = "沙脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/ShaHUB/refs/heads/main/ShaHUB"))()
-    end
-})
-
-Section7:Button({
-    Name = "皮脚本",
-    Callback = function()
-        getgenv().XiaoPi = "皮脚本QQ群1002100032"
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
-    end
-})
-
-Section7:Button({
-    Name = "HK Hub",
-    Callback = function()
-        loadstring(game:HttpGet(('https://github.com/devslopo/DVES/raw/main/XK%20Hub')))()
-    end
-})
-
-Section7:Button({
-    Name = "雪花脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XH.HOW/refs/heads/main/XH.hox"))()
-    end
-})
-
-Section7:Button({
-    Name = "黑洞中心",
-    Callback = function()
-        BS = "\104\116\116\112\115\58\47\47\103\105\116\101\101\46\99\111\109\47\66\83\95\115\99\114\105\112\116\47\115\99\114\105\112\116\47\114\97\119\47\109\97\115\116\101\114\47\66\83\95\83\99\114\105\112\116\46\76\117\97\117"
-        loadstring(game:HttpGet(BS))()
-    end
-})
-
--- ================= 重型钓鱼 Page =================
-local Page8 = Window:Page({Name = "重型钓鱼", Icon = "rbxassetid://4483362458"})
-local Section8 = Page8:Section({Name = "钓鱼功能", Side = 1})
-
-Section8:Button({
-    Name = "重型钓鱼",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/p54803322-coder/PPINGYYY-HUB-/refs/heads/main/main.lua"))()
-    end
-})
-
--- ================= 暴力区 Page =================
-local Page9 = Window:Page({Name = "暴力区", Icon = "rbxassetid://4483362458"})
-local Section9 = Page9:Section({Name = "暴力区功能", Side = 1})
-
-Section9:Button({
-    Name = "暴力区脚本",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
-    end
-})
-
-Section9:Button({
-    Name = "暴力区超强脚本 英文",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/lixxxWW/ViolenceDistrict/refs/heads/main/ViolenceDistrict.lua"))()
-    end
-})
+-- ... 后面是你原来的按钮代码，完全不需要动 ...
