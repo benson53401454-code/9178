@@ -1,157 +1,233 @@
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+-- 加载 Neverlose UI 库
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImInsane-1337/neverlose-ui/refs/heads/main/source/library.lua"))()
 
-local Window = WindUI:CreateWindow({
-    Title = "LOL Hub",
-    Icon = "door-open",
-    Author = "",
-    Folder = "CloudHub",
-    Size = UDim2.fromOffset(560, 360),
-    Transparent = true,
-    Theme = "Dark",
-    User = {
-        Enabled = true,
-        Callback = function() 
-            print("clicked") 
-        end,
-        Anonymous = true
-    },
+-- 创建主窗口 (Size 缩小)
+local Window = Library:Window({
+    Name = "LOL Hub",
+    SubName = "by You",
+    Size = UDim2.new(0, 350, 0, 230), -- 缩小了窗口尺寸
+    Logo = "132607724189951", 
+    MenuKeybind = Enum.KeyCode.End
 })
 
-Window:EditOpenButton({
-    Title = "LOL Hub",
-    Icon = "monitor",
-    CornerRadius = UDim.new(0,16),
-    StrokeThickness = 2,
-    Color = ColorSequence.new(
-        Color3.fromHex("FF0F7B"),
-        Color3.fromHex("F89B29")
-    ),
-    Draggable = true,
-})
-
-function Tab(a)
-    return Window:Tab({Title = a, Icon = "eye"})
-end
-
-function Button(a, b, c)
-    return a:Button({Title = b, Callback = c})
-end
-
-function Toggle(a, b, c, d)
-    return a:Toggle({Title = b, Value = c, Callback = d})
-end
-
-function Slider(a, b, c, d, e, f)
-    return a:Slider({Title = b, Step = 1, Value = {Min = c, Max = d, Default = e}, Callback = f})
-end
-
-function Dropdown(a, b, c, d, e)
-    return a:Dropdown({Title = b, Values = c, Value = d, Callback = e})
-end
-
-local Tab1 = Tab("通用")
-local Tab2 = Tab("被遗弃")
-local Tab3 = Tab("死亡之死")
-local Tab4 = Tab("死铁轨")
-local Tab5 = Tab("99夜")
-local Tab6 = Tab("最強战场")
-local Tab7 = Tab("其他各大脚本")
-local Tab8 = Tab("重型钓鱼")
-local Tab9 = Tab("暴力区")
-
-Button(Tab2, "Hub 被遗弃", function() 
-        loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
+-- ================= 汉化设置面板 =================
+-- 通过遍历 CoreGui，找到 Neverlose UI 的界面元素，替换文字
+task.spawn(function()
+    task.wait(1) -- 等待 UI 加载完成
+    pcall(function()
+        for _, v in pairs(game:GetService("CoreGui"):GetDescendants()) do
+            if v:IsA("TextLabel") or v:IsA("TextButton") then
+                -- 设置面板翻译
+                if v.Text == "Settings" then v.Text = "设置"
+                elseif v.Text == "Configs" then v.Text = "配置"
+                elseif v.Text == "Visuals" then v.Text = "视觉"
+                elseif v.Text == "Keybinds" then v.Text = "按键绑定"
+                elseif v.Text == "Save" then v.Text = "保存"
+                elseif v.Text == "Load" then v.Text = "加载"
+                elseif v.Text == "Delete" then v.Text = "删除"
+                elseif v.Text == "Menu Keybind" then v.Text = "菜单按键"
+                elseif v.Text == "Unload" then v.Text = "卸载脚本"
+                elseif v.Text == "Interface" then v.Text = "界面设置"
+                elseif v.Text == "Accent Color" then v.Text = "主题颜色"
+                elseif v.Text == "Toggle UI" then v.Text = "显示/隐藏UI"
+                elseif v.Text == "Panic" then v.Text = "紧急退出"
+                elseif v.Text == "Close" then v.Text = "关闭"
+                end
+            end
+        end
+    end)
 end)
 
-Button(Tab3, "Hub 死亡之死", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Death%20of%20death"))()
-end)
+-- ================= 通用 Page =================
+local Page1 = Window:Page({Name = "通用", Icon = "rbxassetid://4483362458"})
+local Section1 = Page1:Section({Name = "通用功能", Side = 1})
 
-Button(Tab4, "Hub 死铁轨", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/DeadRail"))()
-end)
-
-Button(Tab1, "飞行", function() 
+Section1:Button({
+    Name = "飞行",
+    Callback = function()
         loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()
-end)
+    end
+})
 
-Button(Tab1, "跑速", function() 
+Section1:Button({
+    Name = "跑速",
+    Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/MrScripterrFr/Speed-Changer/main/Speed%20Changer"))()
-end)
+    end
+})
 
-Button(Tab7, "黄某脚本", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
-end)
-
-Button(Tab5, "虚空99天汉化", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ke9460394-dot/ugik/refs/heads/main/99%E5%A4%9C%E8%99%9A%E7%A9%BA.txt"))()
-end)
-
-Button(Tab6, "垃圾桶战神", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))()
-end)
-
-Button(Tab1, "色色?", function() 
+Section1:Button({
+    Name = "色色?",
+    Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
-end)
+    end
+})
 
-Button(Tab1, "无敌少侠飞行脚本", function() 
+Section1:Button({
+    Name = "无敌少侠飞行脚本",
+    Callback = function()
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invinicible-Flight-R15-45414"))()
-end)
+    end
+})
 
-Button(Tab1, "西班牙无敌脚本", function() 
+Section1:Button({
+    Name = "西班牙无敌脚本",
+    Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/5twh2hsf9j-byte/BowenPrime67/refs/heads/main/Python"))()
-end)
+    end
+})
 
-Button(Tab7, "沙脚本", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/ShaHUB/refs/heads/main/ShaHUB"))()
-end)
+Section1:Button({
+    Name = "TX翻译脚本",
+    Callback = function()
+        TX = "TX Script"
+        Script = "全自动翻译"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/JsYb666/Item/refs/heads/main/Auto-language"))()
+    end
+})
 
-Button(Tab7, "皮脚本", function() 
-        getgenv().XiaoPi="皮脚本QQ群1002100032" loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
-end)
+-- ================= 被遗弃 Page =================
+local Page2 = Window:Page({Name = "被遗弃", Icon = "rbxassetid://4483362458"})
+local Section2 = Page2:Section({Name = "被遗弃功能", Side = 1})
 
-Button(Tab7, "HK Hub", function() 
-        loadstring(game:HttpGet(('https://github.com/devslopo/DVES/raw/main/XK%20Hub')))()
-end)
+Section2:Button({
+    Name = "Hub 被遗弃",
+    Callback = function()
+        loadstring(game:HttpGet("https://github.com/DevSloPo/Main/raw/main/Forsaken"))()
+    end
+})
 
-Button(Tab7, "雪花脚本", function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XH.HOW/refs/heads/main/XH.hox"))()
-end)
+-- ================= 死亡之死 Page =================
+local Page3 = Window:Page({Name = "死亡之死", Icon = "rbxassetid://4483362458"})
+local Section3 = Page3:Section({Name = "死亡之死功能", Side = 1})
 
-Button(Tab4, "红叶子 要卡密", function() 
+Section3:Button({
+    Name = "Hub 死亡之死",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Death%20of%20death"))()
+    end
+})
+
+-- ================= 死铁轨 Page =================
+local Page4 = Window:Page({Name = "死铁轨", Icon = "rbxassetid://4483362458"})
+local Section4 = Page4:Section({Name = "死铁轨功能", Side = 1})
+
+Section4:Button({
+    Name = "Hub 死铁轨",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/DeadRail"))()
+    end
+})
+
+Section4:Button({
+    Name = "红叶子 要卡密",
+    Callback = function()
         loadstring(game:HttpGet("https://getnative.cc/script/loader"))()
-end)
+    end
+})
 
-Button(Tab6, "最强战场自动格挡和自瞄", function() 
+-- ================= 99夜 Page =================
+local Page5 = Window:Page({Name = "99夜", Icon = "rbxassetid://4483362458"})
+local Section5 = Page5:Section({Name = "99夜功能", Side = 1})
+
+Section5:Button({
+    Name = "虚空99天汉化",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ke9460394-dot/ugik/refs/heads/main/99%E5%A4%9C%E8%99%9A%E7%A9%BA.txt"))()
+    end
+})
+
+-- ================= 最強战场 Page =================
+local Page6 = Window:Page({Name = "最強战场", Icon = "rbxassetid://4483362458"})
+local Section6 = Page6:Section({Name = "最強战场功能", Side = 1})
+
+Section6:Button({
+    Name = "垃圾桶战神",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man", true))()
+    end
+})
+
+Section6:Button({
+    Name = "最强战场自动格挡和自瞄",
+    Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/DevSloPo/Main/refs/heads/main/Tsb"))()
-end)
+    end
+})
 
-Button(Tab7, "黑洞中心", function() 
-        BS="\104\116\116\112\115\58\47\47\103\105\116\101\101\46\99\111\109\47\66\83\95\115\99\114\105\112\116\47\115\99\114\105\112\116\47\114\97\119\47\109\97\115\116\101\114\47\66\83\95\83\99\114\105\112\116\46\76\117\97\117"loadstring(game:HttpGet(BS))()
-end)
+-- ================= 其他各大脚本 Page =================
+local Page7 = Window:Page({Name = "其他各大脚本", Icon = "rbxassetid://4483362458"})
+local Section7 = Page7:Section({Name = "其他脚本", Side = 1})
 
-Button(Tab8, "重型钓鱼", function() 
-        --[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
-loadstring(game:HttpGet("https://raw.githubusercontent.com/p54803322-coder/PPINGYYY-HUB-/refs/heads/main/main.lua"))()
-end)
+Section7:Button({
+    Name = "黄某脚本",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaokong6/x1/refs/heads/main/黄某脚本加载器"))()
+    end
+})
 
-Button(Tab9, "暴力区脚本", function() 
+Section7:Button({
+    Name = "沙脚本",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/114514lzkill/ShaHUB/refs/heads/main/ShaHUB"))()
+    end
+})
+
+Section7:Button({
+    Name = "皮脚本",
+    Callback = function()
+        getgenv().XiaoPi = "皮脚本QQ群1002100032"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaopi77/xiaopi77/main/QQ1002100032-Roblox-Pi-script.lua"))()
+    end
+})
+
+Section7:Button({
+    Name = "HK Hub",
+    Callback = function()
+        loadstring(game:HttpGet(('https://github.com/devslopo/DVES/raw/main/XK%20Hub')))()
+    end
+})
+
+Section7:Button({
+    Name = "雪花脚本",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/54863r/XH.HOW/refs/heads/main/XH.hox"))()
+    end
+})
+
+Section7:Button({
+    Name = "黑洞中心",
+    Callback = function()
+        BS = "\104\116\116\112\115\58\47\47\103\105\116\101\101\46\99\111\109\47\66\83\95\115\99\114\105\112\116\47\115\99\114\105\112\116\47\114\97\119\47\109\97\115\116\101\114\47\66\83\95\83\99\114\105\112\116\46\76\117\97\117"
+        loadstring(game:HttpGet(BS))()
+    end
+})
+
+-- ================= 重型钓鱼 Page =================
+local Page8 = Window:Page({Name = "重型钓鱼", Icon = "rbxassetid://4483362458"})
+local Section8 = Page8:Section({Name = "钓鱼功能", Side = 1})
+
+Section8:Button({
+    Name = "重型钓鱼",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/p54803322-coder/PPINGYYY-HUB-/refs/heads/main/main.lua"))()
+    end
+})
+
+-- ================= 暴力区 Page =================
+local Page9 = Window:Page({Name = "暴力区", Icon = "rbxassetid://4483362458"})
+local Section9 = Page9:Section({Name = "暴力区功能", Side = 1})
+
+Section9:Button({
+    Name = "暴力区脚本",
+    Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pandu-Hub12/rosblox/refs/heads/main/violence"))()
-end)
+    end
+})
 
-Button(Tab9, "暴力区超强脚本 英文", function()
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lixxWW/ViolenceDistrict/refs/heads/main/ViolenceDistrict.lua"))()
-
-end)
-
-Button(Tab1, "TX翻译脚本", function()
-
-TX = "TX Script"
-Script = "全自动翻译"
-loadstring(game:HttpGet("https://raw.githubusercontent.com/JsYb666/Item/refs/heads/main/Auto-language"))()
-
-end)
+Section9:Button({
+    Name = "暴力区超强脚本 英文",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/lixxxWW/ViolenceDistrict/refs/heads/main/ViolenceDistrict.lua"))()
+    end
+})
