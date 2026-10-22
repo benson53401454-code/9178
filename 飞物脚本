@@ -27,7 +27,7 @@ end
 local Window = Library:Window({
     Name = "LOL Hub",
     SubName = "by You",
-    Logo = "123456789", -- 可以换成你自己的 Roblox 素材 ID
+    Logo = "132607724189951", -- 可以换成你自己的 Roblox 素材 ID
     MenuKeybind = Enum.KeyCode.End -- 按 End 键打开/关闭菜单
 })
 
