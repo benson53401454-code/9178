@@ -1,2 +1,2 @@
-local target = "https://raw.githubusercontent.com/benson53401454-code/9178/refs/heads/main/%E9%A3%9E%E7%89%A9%E8%84%9A%E6%9C%AC"
+local target = "https://raw.githubusercontent.com/benson53401454-code/9178/main/%E9%A3%9E%E7%89%A9%E8%84%9A%E6%9C%AC"
 loadstring(game:HttpGet(target))()
