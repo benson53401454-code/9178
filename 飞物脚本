@@ -24,7 +24,7 @@ getgenv().KeepSpeed = false
 MainSection:Slider({
     Name = "移动速度",
     Min = 16,
-    Max = 500,
+    Max = 1000,
     Default = 16,
     Callback = function(value)
         getgenv().PlayerSpeed = value
