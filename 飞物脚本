@@ -8,7 +8,7 @@ Library:ChangeTheme("AccentGradient", Color3.fromRGB(255, 0, 0))
 -- 创建主窗口 (按 End 键开启)
 local Window = Library:Window({
     Name = "LOL Hub",
-    SubName = "by You",
+    SubName = "祝你生活美好",
     Logo = "", 
     MenuKeybind = Enum.KeyCode.End
 })
