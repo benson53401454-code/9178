@@ -1,4 +1,83 @@
--- 加载 Neverlose UI 库
+-- ================= 背景音乐 (一直循环播放) =================
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://92090093126859"
+sound.Volume = 0.5
+sound.Looped = true
+sound.TimePosition = 5 -- 从第 5 秒开始播放
+sound.Parent = game:GetService("SoundService")
+sound:Play()
+
+-- ================= 独立的加载动画 =================
+local TweenService = game:GetService("TweenService")
+local loadingGui = Instance.new("ScreenGui")
+loadingGui.Name = "LOLHubLoading"
+loadingGui.IgnoreGuiInset = true
+loadingGui.Parent = game:GetService("CoreGui")
+
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+bg.BackgroundTransparency = 0.8 -- 80%透明
+bg.Parent = loadingGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0.4, 0)
+title.BackgroundTransparency = 1
+title.Text = "LOL HUB"
+title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 40
+title.Parent = bg
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, 0, 0, 30)
+status.Position = UDim2.new(0, 0, 0.6, 0)
+status.BackgroundTransparency = 1
+status.Text = "正在加载核心组件..."
+status.TextColor3 = Color3.fromRGB(200, 200, 200)
+status.Font = Enum.Font.Gotham
+status.TextSize = 18
+status.Parent = bg
+
+local barBg = Instance.new("Frame")
+barBg.Size = UDim2.new(0, 300, 0, 6)
+barBg.Position = UDim2.new(0.5, -150, 0.55, 0)
+barBg.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+barBg.Parent = bg
+Instance.new("UICorner", barBg).CornerRadius = UDim.new(1, 0)
+
+local barFill = Instance.new("Frame")
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+barFill.Parent = barBg
+Instance.new("UICorner", barFill).CornerRadius = UDim.new(1, 0)
+
+-- 等待加载动画播完
+task.wait(0.5)
+status.Text = "正在注入 Neverlose UI..."
+TweenService:Create(barFill, TweenInfo.new(1.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0.5, 0, 1, 0)}):Play()
+
+task.wait(1.2)
+status.Text = "正在加载脚本数据..."
+TweenService:Create(barFill, TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)}):Play()
+
+task.wait(1.0)
+status.Text = "加载成功！"
+task.wait(0.3)
+
+-- 动画渐隐并销毁
+local fadeTime = 0.4
+TweenService:Create(bg, TweenInfo.new(fadeTime), {BackgroundTransparency = 1}):Play()
+TweenService:Create(title, TweenInfo.new(fadeTime), {TextTransparency = 1}):Play()
+TweenService:Create(status, TweenInfo.new(fadeTime), {TextTransparency = 1}):Play()
+TweenService:Create(barBg, TweenInfo.new(fadeTime), {BackgroundTransparency = 1}):Play()
+TweenService:Create(barFill, TweenInfo.new(fadeTime), {BackgroundTransparency = 1}):Play()
+
+task.wait(fadeTime)
+loadingGui:Destroy()
+
+-- ================= 动画彻底结束后，才开始加载 UI 和脚本 =================
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImInsane-1337/neverlose-ui/refs/heads/main/source/library.lua"))()
 
 -- 修改主题为红色
@@ -8,7 +87,7 @@ Library:ChangeTheme("AccentGradient", Color3.fromRGB(255, 0, 0))
 -- 创建主窗口 (按 End 键开启)
 local Window = Library:Window({
     Name = "LOL Hub",
-    SubName = "祝你生活美好",
+    SubName = "by You",
     Logo = "", 
     MenuKeybind = Enum.KeyCode.End
 })
@@ -24,7 +103,7 @@ getgenv().KeepSpeed = false
 MainSection:Slider({
     Name = "移动速度",
     Min = 16,
-    Max = 250,
+    Max = 500,
     Default = 16,
     Callback = function(value)
         getgenv().PlayerSpeed = value
@@ -50,7 +129,7 @@ getgenv().KeepJump = false
 MainSection:Slider({
     Name = "跳跃高度",
     Min = 50,
-    Max = 300,
+    Max = 500,
     Default = 50,
     Callback = function(value)
         getgenv().PlayerJump = value
