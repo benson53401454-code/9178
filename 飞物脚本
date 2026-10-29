@@ -1,11 +1,11 @@
--- ================= 背景音乐 (一直循环播放) =================
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://92090093126859"
-sound.Volume = 0.5
-sound.Looped = true
-sound.TimePosition = 5 -- 从第 5 秒开始播放
-sound.Parent = game:GetService("SoundService")
-sound:Play()
+-- ================= 背景音乐 =================
+local bgMusic = Instance.new("Sound")
+bgMusic.SoundId = "rbxassetid://92090093126859"
+bgMusic.Volume = 0.5
+bgMusic.Looped = true
+bgMusic.TimePosition = 5
+bgMusic.Parent = game:GetService("SoundService")
+bgMusic:Play()
 
 -- ================= 独立的加载动画 =================
 local TweenService = game:GetService("TweenService")
@@ -17,7 +17,7 @@ loadingGui.Parent = game:GetService("CoreGui")
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-bg.BackgroundTransparency = 0.8 -- 80%透明
+bg.BackgroundTransparency = 0.8
 bg.Parent = loadingGui
 
 local title = Instance.new("TextLabel")
@@ -84,7 +84,7 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImIns
 Library:ChangeTheme("Accent", Color3.fromRGB(255, 0, 0))
 Library:ChangeTheme("AccentGradient", Color3.fromRGB(255, 0, 0))
 
--- 创建主窗口 (按 End 键开启)
+-- 创建主窗口
 local Window = Library:Window({
     Name = "LOL Hub",
     SubName = "by You",
@@ -93,8 +93,21 @@ local Window = Library:Window({
 })
 
 -- ================= 主要 Page =================
-local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://4483362458"})
+local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://132607724189951"})
 local MainSection = MainPage:Section({Name = "主要功能", Side = 1})
+
+-- 音乐音量调节
+MainSection:Slider({
+    Name = "背景音乐音量",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Callback = function(value)
+        if bgMusic then
+            bgMusic.Volume = value
+        end
+    end
+})
 
 -- 速度修改
 getgenv().PlayerSpeed = 16
