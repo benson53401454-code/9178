@@ -5,7 +5,7 @@ bgMusic.Volume = 0.5
 bgMusic.Looped = true
 bgMusic.TimePosition = 5
 bgMusic.Parent = game:GetService("SoundService")
-bgMusic:Play()
+bgMusic:Play() -- 默认开启播放
 
 -- ================= 独立的加载动画 =================
 local TweenService = game:GetService("TweenService")
@@ -93,18 +93,20 @@ local Window = Library:Window({
 })
 
 -- ================= 主要 Page =================
-local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://132607724189951"})
+local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://4483362458"})
 local MainSection = MainPage:Section({Name = "主要功能", Side = 1})
 
--- 音乐音量调节
-MainSection:Slider({
-    Name = "背景音乐音量",
-    Min = 0,
-    Max = 1,
-    Default = 0.5,
-    Callback = function(value)
-        if bgMusic then
-            bgMusic.Volume = value
+-- 音乐播放开关（默认开启）
+getgenv().MusicPlaying = true
+MainSection:Toggle({
+    Name = "播放/停止背景音乐",
+    Default = true, -- 这里设置默认开启
+    Callback = function(state)
+        getgenv().MusicPlaying = state
+        if state then
+            bgMusic:Play()
+        else
+            bgMusic:Stop()
         end
     end
 })
