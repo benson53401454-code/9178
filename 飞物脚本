@@ -1,12 +1,3 @@
--- ================= 背景音乐 =================
-local bgMusic = Instance.new("Sound")
-bgMusic.SoundId = "rbxassetid://92090093126859"
-bgMusic.Volume = 0.5
-bgMusic.Looped = true
-bgMusic.TimePosition = 5
-bgMusic.Parent = game:GetService("SoundService")
-bgMusic:Play() -- 默认开启播放
-
 -- ================= 独立的加载动画 =================
 local TweenService = game:GetService("TweenService")
 local loadingGui = Instance.new("ScreenGui")
@@ -96,21 +87,6 @@ local Window = Library:Window({
 local MainPage = Window:Page({Name = "主要", Icon = "rbxassetid://4483362458"})
 local MainSection = MainPage:Section({Name = "主要功能", Side = 1})
 
--- 音乐播放开关（默认开启）
-getgenv().MusicPlaying = true
-MainSection:Toggle({
-    Name = "播放/停止背景音乐",
-    Default = true, -- 这里设置默认开启
-    Callback = function(state)
-        getgenv().MusicPlaying = state
-        if state then
-            bgMusic:Play()
-        else
-            bgMusic:Stop()
-        end
-    end
-})
-
 -- 速度修改
 getgenv().PlayerSpeed = 16
 getgenv().KeepSpeed = false
@@ -173,7 +149,6 @@ MainSection:Toggle({
     Callback = function(state)
         getgenv().NoclipEnabled = state
         if not state then
-            -- 关闭时恢复碰撞
             local char = game.Players.LocalPlayer.Character
             if char then
                 for _, v in pairs(char:GetDescendants()) do
@@ -199,7 +174,6 @@ game:GetService("RunService").Stepped:Connect(function()
         end
     end
 end)
--- =========================================================
 
 -- 锁定循环
 game:GetService("RunService").Heartbeat:Connect(function()
@@ -215,6 +189,74 @@ game:GetService("RunService").Heartbeat:Connect(function()
         end
     end
 end)
+
+-- ================= 播放音乐 Page =================
+local MusicPage = Window:Page({Name = "播放音乐", Icon = "rbxassetid://4483362458"})
+local MusicSection = MusicPage:Section({Name = "音乐设置", Side = 1})
+
+local MusicObj1 = nil
+local MusicObj2 = nil
+local MusicObj3 = nil
+
+-- 1. 播放催眠曲 (原有的)
+MusicSection:Toggle({
+    Name = "播放催眠曲",
+    Default = false,
+    Callback = function(state)
+        if state then
+            if not MusicObj1 then
+                MusicObj1 = Instance.new("Sound")
+                MusicObj1.SoundId = "rbxassetid://71934965392436"
+                MusicObj1.Volume = 0.5
+                MusicObj1.Looped = true
+                MusicObj1.Parent = game:GetService("SoundService")
+            end
+            MusicObj1:Play()
+        else
+            if MusicObj1 then MusicObj1:Stop() end
+        end
+    end
+})
+
+-- 2. 播放音响3.0
+MusicSection:Toggle({
+    Name = "播放音响3.0",
+    Default = false,
+    Callback = function(state)
+        if state then
+            if not MusicObj2 then
+                MusicObj2 = Instance.new("Sound")
+                MusicObj2.SoundId = "rbxassetid://120260326962280"
+                MusicObj2.Volume = 0.5
+                MusicObj2.Looped = true
+                MusicObj2.Parent = game:GetService("SoundService")
+            end
+            MusicObj2:Play()
+        else
+            if MusicObj2 then MusicObj2:Stop() end
+        end
+    end
+})
+
+-- 3. 播放音响2.0
+MusicSection:Toggle({
+    Name = "播放音响2.0",
+    Default = false,
+    Callback = function(state)
+        if state then
+            if not MusicObj3 then
+                MusicObj3 = Instance.new("Sound")
+                MusicObj3.SoundId = "rbxassetid://80210186620241"
+                MusicObj3.Volume = 0.5
+                MusicObj3.Looped = true
+                MusicObj3.Parent = game:GetService("SoundService")
+            end
+            MusicObj3:Play()
+        else
+            if MusicObj3 then MusicObj3:Stop() end
+        end
+    end
+})
 
 -- ================= 通用 Page =================
 local Page1 = Window:Page({Name = "通用", Icon = "rbxassetid://4483362458"})
