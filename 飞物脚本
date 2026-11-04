@@ -218,7 +218,7 @@ MusicSection:Toggle({
     end
 })
 
--- 2. 播放音响3.0
+-- 2. 播放不知名
 MusicSection:Toggle({
     Name = "播放音响3.0",
     Default = false,
@@ -226,7 +226,7 @@ MusicSection:Toggle({
         if state then
             if not MusicObj2 then
                 MusicObj2 = Instance.new("Sound")
-                MusicObj2.SoundId = "rbxassetid://120260326962280"
+                MusicObj2.SoundId = "rbxassetid://104949799785502"
                 MusicObj2.Volume = 0.5
                 MusicObj2.Looped = true
                 MusicObj2.Parent = game:GetService("SoundService")
